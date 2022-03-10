@@ -107,6 +107,7 @@ sol1 = problem.astar(show=False)
 if sol1 is None: print("  No solution found!")
 else: print(f"Solution is {len(sol1)} steps")
 
+
 def total_manhattan_distance(state: PuzzleState):
     h = 0
     for i, v in enumerate(state.slots):
@@ -117,17 +118,14 @@ def total_manhattan_distance(state: PuzzleState):
 print()
 print("Solving with h(n) = total Manhattan distance")
 problem = EightPuzzleProblem(total_manhattan_distance)
-sol2 = problem.astar(show=True)
+sol2 = problem.astar(show=False)
 if sol2 is None: print("  No solution found!")
 else: 
-    print(f"Solution is {len(sol2)} steps")
-
+    print(f"Best solution in {len(sol2)} steps:")
     state = problem.initial_state
-    print()
-    print("The solution is:")
     for i, a in enumerate(sol2):
         state = a.apply(state)
-        print(f" {i}) {a}")
+        print(f"{i:3}) {a}")
 
         sstr = '\n     '.join(str(state).split(' || '))
         print("     " + sstr)

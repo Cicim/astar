@@ -116,15 +116,16 @@ def solve(game: frogger_game):
     traffic_directions = [0, 1, 1, -1, -1, 1, 1, 0]
 
     problem = FroggerProblem(game.state_matrix, traffic_directions, heuristic=(lambda s: s.y - 1))
-    solution = problem.astar(show=False)
+    solution = problem.astar(show=True)
 
     if solution == None:
         print("   There is no solution")
         return None
 
+    print(f"Best solution in {len(solution)} moves:")
     s = problem.initial_state
     for i, a in enumerate(solution):
-        print(f"{i:3}) {a}")
+        print(f"{i+1:3}) {a}")
         s = a.apply(s)
         print(f"{'':<5} to {s}")
 

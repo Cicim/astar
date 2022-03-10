@@ -152,7 +152,7 @@ solution = problem.astar(show=True)
 print()
 print("Objective:")
 print(f" + Reach the state {CamState(0, 0, 3, 3, True)}")
-print("Solution:")
+print(f"Best solution in {len(solution)} steps:")
 if solution is None:
     print(" No solution?")
 else:
@@ -160,5 +160,5 @@ else:
     for i, step in enumerate(solution):
         print("\t", state)
         state = step.apply(state)
-        print(f"{i}) {step}")
+        print(f"{i+1:3}) {step}")
     print("\t", state)

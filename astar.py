@@ -6,6 +6,8 @@ class State:
     parent: 'State' = None  # Stato di partenza per arrivare a questo stato
     action: 'Action' = None  # Azione per passare da parent a questo stato
 
+    h: int = 0 # La salvo per non doverla ricalcolare ad ogni iterazione
+
     @abstractmethod
     def is_invalid(self) -> bool:
         """Ritorna se questo stato è invalido, ovvero se non rispetta qualche vincolo"""
@@ -164,17 +166,19 @@ class Problem:
         """
         if not state:
             state = self.initial_state
-        if state.is_final():
+        elif state.is_final():
             if show: print("You started from a final state!")
             return []
+        elif state.is_invalid():
+            print("You started in an invalid state")
+            return None
 
         # Memorizza gli stati visitati come coppie (hash dello stato, g per lo stato)
-        cost_to_reach: dict[int, int] = {hash(state): 0}
+        visited_g: dict[int, int] = {hash(state): 0}
+        state.h = self.heuristic(state)
 
         # Frontiera: dove inserire ed estrarre gli stati da analizzare
-        fringe: StatePQueue = StatePQueue(
-            lambda s: self.heuristic(s) + cost_to_reach[hash(s)])
-            
+        fringe: StatePQueue = StatePQueue(lambda s: s.h + visited_g[hash(s)])
         fringe.insert(state)
 
         # Oggetto della classe State con i riferimenti per ricostruire il percorso
@@ -190,9 +194,10 @@ class Problem:
             extracted_count += 1
 
             if show:
+                g = visited_g[hash(extracted)]
                 print()
                 print(f"Popped n = `{extracted}`")
-                print(f" with h(n)={self.heuristic(extracted)}, g(n)={cost_to_reach[hash(extracted)]}")
+                print(f" with f(n)={g + extracted.h} h(n)={extracted.h} g(n)={g}")
                 print("Applyable actions:")
 
             for a in self.possible_actions(extracted):
@@ -212,10 +217,10 @@ class Problem:
                         break
 
                     # Che non è già stato visitato
-                    if cost_to_reach.get(hash(new_state), None) == None:
+                    if visited_g.get(hash(new_state), None) == None:
+                        new_state.h = self.heuristic(new_state)
                         # Aggiungilo alla lista degli stati visitati
-                        cost_to_reach[hash(new_state)] = cost_to_reach[hash(
-                            extracted)] + a.cost
+                        visited_g[hash(new_state)] = visited_g[hash(extracted)] + a.cost
                         # ...e alla frontiera
                         fringe.insert(new_state)
 
