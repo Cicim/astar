@@ -69,9 +69,9 @@ class FroggerAction(Action):
         elif self.move == FroggerMove.Down:
             y += 1
         elif self.move == FroggerMove.Left:
-            x -= 1
+            x -= 2
         elif self.move == FroggerMove.Right:
-            x += 1
+            x += 2
         elif self.move == FroggerMove.Nothing:
             pass
         else:
@@ -103,7 +103,7 @@ class FroggerProblem(Problem):
     width: int
     height: int
 
-    def __init__(self, heuristic: CostFunction_t, game_map: list[list[int]], car_moves: list[int]):
+    def __init__(self, game_map: list[list[int]], car_moves: list[int], heuristic: CostFunction_t):
         super().__init__(heuristic)
 
         self.initial_state = FroggerState(self, 7, 7, 0)
@@ -116,26 +116,3 @@ class FroggerProblem(Problem):
     def possible_actions(self, _):
         for move in FroggerMove:
             yield FroggerAction(move)
-
-
-def heuristic(state: FroggerState) -> int:
-    return state.y - 1
-
-
-game_map = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
-traffic_directions = [0, 1, 1, -1, -1, 1, 1, 0]
-
-problem = FroggerProblem(heuristic, game_map, traffic_directions)
-solution = problem.astar(show=False)
-
-for i, a in enumerate(solution):
-    print(f"{i:3}) {a}")
