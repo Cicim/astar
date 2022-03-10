@@ -19,7 +19,8 @@ RATE_TH = 5
 WIDTH, HEIGHT = 640, 320
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("First Game!")
-FPS = 30
+# FPS = 30
+FPS = 3
 
 
 class frogger_game:
@@ -112,8 +113,7 @@ class frogger_game:
         solution = problem.astar(show=True)
 
         if solution == None:
-            print("   There is no solution")
-            return None
+            exit(1)
 
         print(f"Best solution in {len(solution)} moves:")
         s = problem.initial_state
@@ -174,14 +174,15 @@ def main():
             draw_win()
 
         if ((not lost) and (not win)):
-            action = 0
 #            action = game.simple_reactive()
             action = game.a_star_path_to_actions()
-            '''
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                     pygame.quit()
+
+            '''
                 if event.type == pygame.KEYDOWN:
                     if (event.key == pygame.K_LEFT):
                         action = 1
@@ -195,7 +196,6 @@ def main():
                         action = 0
             '''
             lost, win = game.step(action)
-            time.sleep(1)
 
 
 main()
